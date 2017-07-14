@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+
+
+        <Button
+            android:id="@+id/test_load_data_empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Load empty"
+            />
+        <Button
+            android:id="@+id/test_load_data_failed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Load failed"
+            />
+
+        <Button
+            android:id="@+id/test_load_data_success"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Load success"
+            />
+
+    </LinearLayout>
+
+    <com.toong.recyclerviewwithemptyandretry.widget.RecyclerViewEmptyRetryGroup
+        android:id="@+id/recyclerViewEmptyRetryGroup"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
+        <LinearLayout
+            android:id="@+id/layout_empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="vertical"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="No data"
+                />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@mipmap/ic_launcher"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_retry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="vertical"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Load failed"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Try again"
+                />
+        </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            />
+
+    </com.toong.recyclerviewwithemptyandretry.widget.RecyclerViewEmptyRetryGroup>
+
+</LinearLayout>
