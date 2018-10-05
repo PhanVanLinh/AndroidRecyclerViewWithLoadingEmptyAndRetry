@@ -12,7 +12,6 @@
         android:orientation="horizontal"
         >
 
-
         <Button
             android:id="@+id/test_load_data_empty"
             android:layout_width="wrap_content"
@@ -53,6 +52,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:orientation="vertical"
+            android:visibility="gone"
             >
             <TextView
                 android:layout_width="wrap_content"
@@ -72,6 +72,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:orientation="vertical"
+            android:visibility="gone"
             >
             <TextView
                 android:layout_width="wrap_content"
@@ -86,6 +87,7 @@
         </LinearLayout>
 
         <ProgressBar
+            android:visibility="gone"
             android:id="@+id/progress_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
