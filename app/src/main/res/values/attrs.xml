@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="NetworkStateLayout_Layout">
+        <attr name="layout_network_state">
+            <enum name="loading" value="1"/>
+            <enum name="empty" value="2"/>
+            <enum name="failed" value="3"/>
+            <enum name="success" value="4"/>
+            <enum name="complete" value="5"/>
+        </attr>
+    </declare-styleable>
+</resources>

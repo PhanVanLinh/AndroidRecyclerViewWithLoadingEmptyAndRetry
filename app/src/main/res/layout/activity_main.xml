@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     >
 
     <LinearLayout
+        android:id="@+id/layout_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -34,25 +36,26 @@
 
     </LinearLayout>
 
-    <com.toong.recyclerviewwithemptyandretry.widget.RecyclerViewEmptyRetryGroup
-        android:id="@+id/recyclerViewEmptyRetryGroup"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/layout_header"
+        />
+
+    <com.toong.recyclerviewwithemptyandretry.widget.NetworkStateLayout
+        android:id="@+id/layout_network_state"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            />
-
         <LinearLayout
-            android:id="@+id/layout_empty"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:orientation="vertical"
             android:visibility="gone"
+            app:layout_network_state="empty"
             >
             <TextView
                 android:layout_width="wrap_content"
@@ -67,19 +70,21 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/layout_retry"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
+            android:gravity="center_horizontal"
             android:orientation="vertical"
             android:visibility="gone"
+            app:layout_network_state="failed"
             >
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:text="Load failed"
                 />
-            <TextView
+            <Button
+                android:id="@+id/button_retry"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:text="Try again"
@@ -87,13 +92,14 @@
         </LinearLayout>
 
         <ProgressBar
-            android:visibility="gone"
             android:id="@+id/progress_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
+            android:visibility="gone"
+            app:layout_network_state="loading"
             />
 
-    </com.toong.recyclerviewwithemptyandretry.widget.RecyclerViewEmptyRetryGroup>
+    </com.toong.recyclerviewwithemptyandretry.widget.NetworkStateLayout>
 
-</LinearLayout>
+</RelativeLayout>

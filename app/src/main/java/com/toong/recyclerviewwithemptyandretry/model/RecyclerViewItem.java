@@ -1,14 +1,10 @@
 package com.toong.recyclerviewwithemptyandretry.model;
 
-/**
- * Created by framgia on 04/07/2017.
- */
-
-public class Item {
+public class RecyclerViewItem {
     private String title;
     private String message;
 
-    public Item(String title, String message) {
+    public RecyclerViewItem(String title, String message) {
         this.title = title;
         this.message = message;
     }

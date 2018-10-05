@@ -7,40 +7,45 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import com.toong.recyclerviewwithemptyandretry.adapter.MyRecyclerViewAdapter;
-import com.toong.recyclerviewwithemptyandretry.base.BaseRecyclerViewAdapter;
-import com.toong.recyclerviewwithemptyandretry.model.Item;
-import com.toong.recyclerviewwithemptyandretry.widget.RecyclerViewEmptyRetryGroup;
+import com.toong.recyclerviewwithemptyandretry.adapter.UserAdapter;
+import com.toong.recyclerviewwithemptyandretry.model.UserItem;
+import com.toong.recyclerviewwithemptyandretry.widget.NetworkStateLayout;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity
-        implements BaseRecyclerViewAdapter.ItemClickListener {
-    private RecyclerViewEmptyRetryGroup mRecyclerViewEmptyRetryGroup;
-    private MyRecyclerViewAdapter adapter;
-    private List<Item> data;
+public class MainActivity extends AppCompatActivity {
+    private UserAdapter adapter;
+    private List<UserItem> data = new ArrayList<>();
+    private NetworkStateLayout networkStateLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        initViews();
+        handleEvents();
+    }
 
-        mRecyclerViewEmptyRetryGroup =
-                (RecyclerViewEmptyRetryGroup) findViewById(R.id.recyclerViewEmptyRetryGroup);
+    private void initViews() {
+        networkStateLayout = findViewById(R.id.layout_network_state);
 
-        RecyclerView recyclerView = mRecyclerViewEmptyRetryGroup.getRecyclerView();
-
-        data = new ArrayList<>();
-
-        // set up the RecyclerView
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
         LinearLayoutManager l = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(l);
-        adapter = new MyRecyclerViewAdapter(this, this);
-
+        adapter = new UserAdapter();
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(
                 new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
+        networkStateLayout.getFailView().findViewById(R.id.button_retry).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadDataSuccess();
+            }
+        });
+    }
+
+    private void handleEvents() {
         findViewById(R.id.test_load_data_empty).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -61,67 +66,45 @@ public class MainActivity extends AppCompatActivity
                 loadDataSuccess();
             }
         });
-
-        mRecyclerViewEmptyRetryGroup.setOnRetryClick(new RecyclerViewEmptyRetryGroup.OnRetryClick() {
-            @Override
-            public void onRetry() {
-                loadDataSuccess();
-            }
-        });
     }
 
     private void loadDataEmpty() {
         adapter.clear();
-        mRecyclerViewEmptyRetryGroup.loading();
+        networkStateLayout.showLoadingView();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                mRecyclerViewEmptyRetryGroup.empty();
+                networkStateLayout.showEmptyView();
                 adapter.notifyDataSetChanged();
             }
-        }, 500);
+        }, 1000);
     }
 
     private void loadDataFailed() {
         adapter.clear();
-        mRecyclerViewEmptyRetryGroup.loading();
+        networkStateLayout.showLoadingView();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                mRecyclerViewEmptyRetryGroup.retry();
+                networkStateLayout.showFailView();
                 adapter.notifyDataSetChanged();
             }
-        }, 500);
+        }, 1000);
     }
 
     private void loadDataSuccess() {
         data.clear();
-
-        mRecyclerViewEmptyRetryGroup.loading();
+        networkStateLayout.showLoadingView();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                data.add(new Item("0", "b"));
-                data.add(new Item("1", "b"));
-                data.add(new Item("2", "b"));
-                data.add(new Item("3", "b"));
-                data.add(new Item("4", "b"));
-                data.add(new Item("5", "b"));
-                data.add(new Item("6", "b"));
-                data.add(new Item("7", "b"));
-                data.add(new Item("8", "b"));
-                data.add(new Item("9", "b"));
-                data.add(new Item("10", "b"));
-
+                for (int i = 0; i < 10; i++) {
+                    data.add(new UserItem("" + i));
+                }
                 adapter.set(data);
-                mRecyclerViewEmptyRetryGroup.success();
+                networkStateLayout.showSuccessView();
                 adapter.notifyDataSetChanged();
             }
-        }, 500);
-    }
-
-    @Override
-    public void onItemClick(View view, int position) {
-
+        }, 1000);
     }
 }
