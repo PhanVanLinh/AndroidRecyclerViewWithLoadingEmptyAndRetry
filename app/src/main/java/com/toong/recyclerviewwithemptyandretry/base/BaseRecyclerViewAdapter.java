@@ -14,13 +14,13 @@ public abstract class BaseRecyclerViewAdapter<T>
 
     public void add(List<T> items) {
         this.items.addAll(items);
-        notifyDataSetChanged();
+        notifyItemRangeInserted(this.items.size() - items.size(), items.size());
     }
 
-    public void set(List<T> dataList) {
-        List<T> clone = new ArrayList<>(dataList);
-        items.clear();
-        items.addAll(clone);
+    public void set(List<T> items) {
+        List<T> clone = new ArrayList<>(items);
+        this.items.clear();
+        this.items.addAll(clone);
         notifyDataSetChanged();
     }
 

@@ -1,6 +1,6 @@
 package com.toong.recyclerviewwithemptyandretry.model;
 
-public class UserItem {
+public class UserItem implements RecyclerViewItem {
     private String name;
 
     public UserItem(String name) {
