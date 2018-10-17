@@ -59,7 +59,7 @@ public class ContactAdapter extends BaseLoadMoreRecyclerViewAdapter<UserItem> {
         }
     }
 
-    static class ContactViewHolder extends BaseViewHolder {
+    static class ContactViewHolder extends BaseViewHolder<ContactItem> {
 
         private ContactViewHolder(View itemView) {
             super(itemView);
@@ -71,8 +71,20 @@ public class ContactAdapter extends BaseLoadMoreRecyclerViewAdapter<UserItem> {
         }
 
         @Override
-        public void bind(Object item) {
+        public void bind(ContactItem item) {
+            super.bind(item);
+        }
+    }
 
+    static class SectionViewHolder extends BaseViewHolder<SectionItem>{
+
+        public SectionViewHolder(View itemView) {
+            super(itemView);
+        }
+
+        @Override
+        public void bind(SectionItem item) {
+            super.bind(item);
         }
     }
 
