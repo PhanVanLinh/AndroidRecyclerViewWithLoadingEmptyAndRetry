@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+    <Button
+        android:id="@+id/button_simple_no_loadmore"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Simple, NO load more"
+        android:textAllCaps="false"
+        />
+
+    <Button
+        android:id="@+id/btn_1type_loadmore"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="1 item view type, load more"
+        android:textAllCaps="false"
+        />
+
+    <Button
+        android:id="@+id/btn_2type_loadmore"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="2 item view type, load more"
+        android:textAllCaps="false"
+        />
+
+    <!-- todo handle later -->
+    <Button
+        android:id="@+id/btn_1type_loadmore_listadapter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="1 item view type, load more, ListAdapter"
+        android:textAllCaps="false"
+        android:visibility="invisible"
+        />
+
+    <Button
+        android:id="@+id/btn_1type_loadmore_listadapter_viewmodel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="1 item view type, load more, ListAdapter, ViewModel"
+        android:textAllCaps="false"
+        android:visibility="invisible"
+        />
+
+</LinearLayout>

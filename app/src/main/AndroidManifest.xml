@@ -11,14 +11,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-        <activity
-            android:name=".screen.user.UserActivity"
-            android:exported="true">
+        <activity android:name=".screen.start.StartActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".screen.user.UserActivity"
+            android:exported="true">
         </activity>
         <activity
             android:name=".screen.contact.ContactActivity"
@@ -27,8 +29,8 @@
         <activity
             android:name=".screen.book.BookActivity"
             android:exported="true">
-
         </activity>
+
     </application>
 
 </manifest>
