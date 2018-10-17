@@ -7,6 +7,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.RelativeLayout;
 import com.toong.recyclerviewwithemptyandretry.R;
+import com.toong.recyclerviewwithemptyandretry.base.NetworkState;
 
 public class NetworkStateLayout extends RelativeLayout {
     @Nullable
@@ -54,23 +55,23 @@ public class NetworkStateLayout extends RelativeLayout {
         }
     }
 
-    public void showLoadingView() {
+    private void showLoadingView() {
         showView(loadingView);
     }
 
-    public void showFailView() {
+    private void showFailView() {
         showView(failView);
     }
 
-    public void showEmptyView() {
+    private void showEmptyView() {
         showView(emptyView);
     }
 
-    public void showSuccessView() {
+    private void showSuccessView() {
         showView(successView);
     }
 
-    public void showCompleteView() {
+    private void showCompleteView() {
         showView(completeView);
     }
 
@@ -83,34 +84,23 @@ public class NetworkStateLayout extends RelativeLayout {
         if (view != null) view.setVisibility(View.VISIBLE);
     }
 
-    @Nullable
-    public View getLoadingView() {
-        return loadingView;
-    }
-
-    @Nullable
-    public View getEmptyView() {
-        return emptyView;
-    }
-
-    @Nullable
-    public View getFailView() {
-        return failView;
-    }
-
-    @Nullable
-    public View getSuccessView() {
-        return successView;
-    }
-
-    @Nullable
-    public View getCompleteView() {
-        return completeView;
-    }
-
     @Override
     public LayoutParams generateLayoutParams(AttributeSet attrs) {
         return new NetworkStateLayout.LayoutParams(getContext(), attrs);
+    }
+
+    public void setNetworkState(NetworkState networkState) {
+        if (networkState instanceof NetworkState.Loading) {
+            showLoadingView();
+        } else if (networkState instanceof NetworkState.Failed) {
+            showFailView();
+        } else if (networkState instanceof NetworkState.Empty) {
+            showEmptyView();
+        } else if (networkState instanceof NetworkState.Success) {
+            showSuccessView();
+        } else {
+            showCompleteView();
+        }
     }
 
     class LayoutParams extends RelativeLayout.LayoutParams {

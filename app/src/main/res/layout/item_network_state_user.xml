@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     >
 
     <LinearLayout
@@ -12,12 +12,12 @@
         android:layout_centerInParent="true"
         android:orientation="vertical"
         android:visibility="gone"
-        app:layout_network_state="empty"
+        app:layout_network_state="complete"
         >
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="No data"
+            android:text="Reach end"
             />
         <ImageView
             android:layout_width="wrap_content"
@@ -36,6 +36,7 @@
         app:layout_network_state="failed"
         >
         <TextView
+            android:id="@+id/text_failed"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="Load failed"
@@ -50,9 +51,10 @@
 
     <ProgressBar
         android:id="@+id/progress_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_centerInParent="true"
+        android:padding="5dp"
         android:visibility="gone"
         app:layout_network_state="loading"
         />

@@ -8,8 +8,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import com.toong.recyclerviewwithemptyandretry.R;
+import com.toong.recyclerviewwithemptyandretry.base.NetworkState;
 import com.toong.recyclerviewwithemptyandretry.model.UserItem;
 import com.toong.recyclerviewwithemptyandretry.screen.user.adapter.UserAdapter;
+import com.toong.recyclerviewwithemptyandretry.widget.EndlessRecyclerViewScrollListener;
 import com.toong.recyclerviewwithemptyandretry.widget.NetworkStateLayout;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,10 +20,13 @@ public class UserActivity extends AppCompatActivity {
     private UserAdapter adapter;
     private List<UserItem> data = new ArrayList<>();
     private NetworkStateLayout networkStateLayout;
+    private EndlessRecyclerViewScrollListener listener;
+    private int page = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().setTitle("Users");
         setContentView(R.layout.activity_user);
         initViews();
         handleEvents();
@@ -30,20 +35,26 @@ public class UserActivity extends AppCompatActivity {
     private void initViews() {
         networkStateLayout = findViewById(R.id.layout_network_state);
 
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
-        LinearLayoutManager l = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(l);
+        RecyclerView rvUser = findViewById(R.id.recycler_view_user);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        rvUser.setLayoutManager(layoutManager);
         adapter = new UserAdapter();
-        recyclerView.setAdapter(adapter);
-        recyclerView.addItemDecoration(
-                new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        rvUser.setAdapter(adapter);
+        rvUser.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        listener = new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore() {
+                page++;
+                fakeLoadMoreDataSuccess(page);
+            }
+        };
+        rvUser.addOnScrollListener(listener);
 
-        networkStateLayout.getFailView()
-                .findViewById(R.id.button_retry)
+        networkStateLayout.findViewById(R.id.button_retry)
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        fakeLoadDataSuccess();
+                        fakeInitialLoadDataSuccess();
                     }
                 });
     }
@@ -52,52 +63,50 @@ public class UserActivity extends AppCompatActivity {
         findViewById(R.id.test_load_data_empty).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fakeLoadDataEmpty();
+                fakeInitialLoadDataEmpty();
             }
         });
 
         findViewById(R.id.test_load_data_failed).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fakeLoadDataFailed();
+                fakeInitialLoadDataFailed();
             }
         });
 
         findViewById(R.id.test_load_data_success).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fakeLoadDataSuccess();
+                fakeInitialLoadDataSuccess();
             }
         });
     }
 
-    private void fakeLoadDataEmpty() {
+    private void fakeInitialLoadDataEmpty() {
         adapter.clear();
-        networkStateLayout.showLoadingView();
+        updateNetworkState(new NetworkState.Loading());
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                networkStateLayout.showEmptyView();
-                adapter.notifyDataSetChanged();
+                updateNetworkState(new NetworkState.Empty());
             }
         }, 1000);
     }
 
-    private void fakeLoadDataFailed() {
+    private void fakeInitialLoadDataFailed() {
         adapter.clear();
-        networkStateLayout.showLoadingView();
+        updateNetworkState(new NetworkState.Loading());
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                networkStateLayout.showFailView();
-                adapter.notifyDataSetChanged();
+                updateNetworkState(new NetworkState.Failed("some error happened"));
             }
         }, 1000);
     }
 
-    private void fakeLoadDataSuccess() {
+    private void fakeInitialLoadDataSuccess() {
         data.clear();
-        networkStateLayout.showLoadingView();
+        updateNetworkState(new NetworkState.Loading());
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -105,9 +114,46 @@ public class UserActivity extends AppCompatActivity {
                     data.add(new UserItem("" + i));
                 }
                 adapter.set(data);
-                networkStateLayout.showSuccessView();
-                adapter.notifyDataSetChanged();
+                updateNetworkState(new NetworkState.Success());
             }
         }, 1000);
+    }
+
+    private void fakeLoadMoreDataSuccess(int page) {
+        updateNetworkState(new NetworkState.Loading());
+        if (page <= 3) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    int start = adapter.getItemCount();
+                    List<UserItem> newData = new ArrayList<>();
+                    for (int i = start; i < start + 10; i++) {
+                        newData.add(new UserItem("" + i));
+                    }
+                    adapter.add(newData);
+                    updateNetworkState(new NetworkState.Success());
+                }
+            }, 1000);
+        } else {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    updateNetworkState(new NetworkState.Complete());
+                }
+            }, 1000);
+        }
+    }
+
+    private boolean isInitialLoad() {
+        return page == 1;
+    }
+
+    private void updateNetworkState(NetworkState networkState) {
+        listener.setNetworkState(networkState);
+        if (isInitialLoad()) {
+            networkStateLayout.setNetworkState(networkState);
+        } else {
+            adapter.setNetworkState(networkState);
+        }
     }
 }

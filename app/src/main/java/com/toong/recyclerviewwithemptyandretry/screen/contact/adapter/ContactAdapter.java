@@ -21,10 +21,15 @@ public class ContactAdapter extends BaseLoadMoreRecyclerViewAdapter<UserItem> {
 
     @Override
     public int getItemViewType(int position) {
-        if ((position == getItemCount() - 1) && hasNetworkStateRow(networkState)) {
+        if ((position == getItemCount() - 1) && isShowNetworkStateRow(networkState)) {
             return ViewType.NETWORK_STATE;
         }
         return ViewType.CONTACT;
+    }
+
+    @Override
+    protected int getNetworkStatePosition() {
+        return 0;
     }
 
     @NonNull
@@ -40,13 +45,18 @@ public class ContactAdapter extends BaseLoadMoreRecyclerViewAdapter<UserItem> {
     }
 
     @Override
-    protected boolean hasNetworkStateRow(NetworkState networkState) {
+    protected boolean isShowNetworkStateRow(NetworkState networkState) {
         return networkState != null;
     }
 
     @Override
     public void onBindViewHolder(@NonNull BaseViewHolder holder, int position) {
-
+        if (holder instanceof ContactViewHolder) {
+            holder.bind(getItem(position));
+        }
+        if (holder instanceof NetworkStateViewHolder) {
+            ((NetworkStateViewHolder) holder).bind(networkState);
+        }
     }
 
     static class ContactViewHolder extends BaseViewHolder {
@@ -57,7 +67,7 @@ public class ContactAdapter extends BaseLoadMoreRecyclerViewAdapter<UserItem> {
 
         static ContactViewHolder create(ViewGroup parent) {
             return new ContactViewHolder(LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_network_state, parent, false));
+                    .inflate(R.layout.item_network_state_user, parent, false));
         }
 
         @Override
@@ -74,20 +84,7 @@ public class ContactAdapter extends BaseLoadMoreRecyclerViewAdapter<UserItem> {
 
         static NetworkStateViewHolder create(ViewGroup parent) {
             return new NetworkStateViewHolder(LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_network_state, parent, false));
-        }
-
-        @Override
-        public void bind(NetworkState item) {
-            if (item instanceof NetworkState.Loading) {
-                networkStateLayout.showLoadingView();
-            }
-            if (item instanceof NetworkState.Failed) {
-                networkStateLayout.showFailView();
-            }
-            if (item instanceof NetworkState.Complete) {
-                networkStateLayout.showCompleteView();
-            }
+                    .inflate(R.layout.item_network_state_user, parent, false));
         }
     }
 }

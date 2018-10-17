@@ -4,30 +4,40 @@ import android.view.View;
 import com.toong.recyclerviewwithemptyandretry.widget.NetworkStateLayout;
 
 public abstract class BaseLoadMoreRecyclerViewAdapter<T> extends BaseRecyclerViewAdapter<T> {
-    protected NetworkState networkState;
-
-    protected abstract boolean hasNetworkStateRow(NetworkState networkState);
+    protected NetworkState networkState = null;
 
     @Override
     public int getItemCount() {
-        return super.getItemCount() + (hasNetworkStateRow(networkState) ? 1 : 0);
+        return super.getItemCount() + (isShowNetworkStateRow(networkState) ? 1 : 0);
+    }
+
+    protected boolean isNetworkStateViewType(int position) {
+        return position == getNetworkStatePosition() && isShowNetworkStateRow(networkState);
+    }
+
+    protected boolean isShowNetworkStateRow(NetworkState networkState) {
+        return networkState != null;
+    }
+
+    protected int getNetworkStatePosition() {
+        return getItemCount() - 1;
     }
 
     public void setNetworkState(NetworkState newNetworkState) {
-        boolean hadNetworkStateRow = hasNetworkStateRow(this.networkState);
-        boolean hasNetworkStateRow = hasNetworkStateRow(newNetworkState);
+        boolean hadNetworkStateRow = isShowNetworkStateRow(this.networkState);
+        boolean hasNetworkStateRow = isShowNetworkStateRow(newNetworkState);
 
         this.networkState = newNetworkState;
         if (hasNetworkStateRow && hadNetworkStateRow) {
-            notifyItemChanged(getItemCount());
+            notifyItemChanged(getNetworkStatePosition());
             return;
         }
         if (hadNetworkStateRow) {
-            notifyItemRemoved(getItemCount());
+            notifyItemRemoved(getNetworkStatePosition());
             return;
         }
         if (hasNetworkStateRow) {
-            notifyItemInserted(getItemCount());
+            notifyItemInserted(getNetworkStatePosition());
         }
     }
 
@@ -38,6 +48,12 @@ public abstract class BaseLoadMoreRecyclerViewAdapter<T> extends BaseRecyclerVie
         public BaseNetworkStateViewHolder(View itemView) {
             super(itemView);
             networkStateLayout = (NetworkStateLayout) itemView;
+        }
+
+        @Override
+        public void bind(NetworkState item) {
+            super.bind(item);
+            networkStateLayout.setNetworkState(item);
         }
     }
 }

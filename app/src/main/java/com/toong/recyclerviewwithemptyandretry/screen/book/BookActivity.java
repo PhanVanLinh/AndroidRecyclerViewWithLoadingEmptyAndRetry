@@ -1,13 +1,15 @@
 package com.toong.recyclerviewwithemptyandretry.screen.book;
 
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.TextView;
 import com.toong.recyclerviewwithemptyandretry.R;
+import com.toong.recyclerviewwithemptyandretry.base.NetworkState;
 import com.toong.recyclerviewwithemptyandretry.model.UserItem;
 import com.toong.recyclerviewwithemptyandretry.screen.user.adapter.UserAdapter;
 import com.toong.recyclerviewwithemptyandretry.widget.NetworkStateLayout;
@@ -35,16 +37,16 @@ public class BookActivity extends AppCompatActivity {
         rvBooks.setLayoutManager(l);
         adapter = new UserAdapter();
         rvBooks.setAdapter(adapter);
-        rvBooks.addItemDecoration(
-                new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        rvBooks.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
         networkStateLayout = findViewById(R.id.layout_network_state);
-        networkStateLayout.getFailView().findViewById(R.id.button_retry).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                fakeLoadDataSuccess();
-            }
-        });
+        networkStateLayout.findViewById(R.id.button_retry)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        fakeLoadDataSuccess();
+                    }
+                });
     }
 
     private void handleEvents() {
@@ -72,11 +74,11 @@ public class BookActivity extends AppCompatActivity {
 
     private void fakeLoadDataEmpty() {
         adapter.clear();
-        networkStateLayout.showLoadingView();
+        updateNetworkState(new NetworkState.Loading());
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                networkStateLayout.showEmptyView();
+                updateNetworkState(new NetworkState.Empty());
                 adapter.notifyDataSetChanged();
             }
         }, 1000);
@@ -84,19 +86,18 @@ public class BookActivity extends AppCompatActivity {
 
     private void fakeLoadDataFailed() {
         adapter.clear();
-        networkStateLayout.showLoadingView();
+        updateNetworkState(new NetworkState.Loading());
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                networkStateLayout.showFailView();
-                adapter.notifyDataSetChanged();
+                updateNetworkState(new NetworkState.Failed("some error happened"));
             }
         }, 1000);
     }
 
     private void fakeLoadDataSuccess() {
         data.clear();
-        networkStateLayout.showLoadingView();
+        updateNetworkState(new NetworkState.Loading());
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -104,9 +105,16 @@ public class BookActivity extends AppCompatActivity {
                     data.add(new UserItem("Book " + i));
                 }
                 adapter.set(data);
-                networkStateLayout.showSuccessView();
-                adapter.notifyDataSetChanged();
+                updateNetworkState(new NetworkState.Success());
             }
         }, 1000);
+    }
+
+    private void updateNetworkState(NetworkState networkState) {
+        networkStateLayout.setNetworkState(networkState);
+        if (networkState instanceof NetworkState.Failed) {
+            ((TextView) findViewById(R.id.text_error_message)).setText(
+                    ((NetworkState.Failed) networkState).getErrorMessage());
+        }
     }
 }

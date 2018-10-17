@@ -1,5 +1,7 @@
 package com.toong.recyclerviewwithemptyandretry.base;
 
+import android.support.annotation.Nullable;
+
 public class NetworkState {
 
     private NetworkState() {
@@ -14,10 +16,16 @@ public class NetworkState {
     }
 
     public static class Failed extends NetworkState {
-        String errorMessage;
+        @Nullable
+        private String errorMessage;
 
-        public Failed(String errorMessage) {
+        public Failed(@Nullable String errorMessage) {
             this.errorMessage = errorMessage;
+        }
+
+        @Nullable
+        public String getErrorMessage() {
+            return errorMessage;
         }
     }
 
